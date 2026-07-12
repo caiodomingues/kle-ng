@@ -46,7 +46,7 @@ export default defineConfig({
     proxy: {
       // Proxy API requests to backend in development
       '/api': {
-        target: 'http://localhost:8080',
+        target: process.env.KLE_PCB_BACKEND || 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       }
