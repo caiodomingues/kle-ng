@@ -8,6 +8,7 @@ import SummaryPanel from './components/SummaryPanel.vue'
 import JsonEditorPanel from './components/JsonEditorPanel.vue'
 import PcbGeneratorPanel from './components/PcbGeneratorPanel.vue'
 import PlateGeneratorPanel from './components/PlateGeneratorPanel.vue'
+import FirmwareGeneratorPanel from './components/FirmwareGeneratorPanel.vue'
 import LayoutEditorSettingsPanel from './components/LayoutEditorSettingsPanel.vue'
 import AppFooter from './components/AppFooter.vue'
 import CanvasToolbar from './components/CanvasToolbar.vue'
@@ -65,7 +66,7 @@ onUnmounted(() => {
   window.removeEventListener('beforeunload', handleBeforeUnload)
 })
 
-const sectionOrder = ref(['canvas', 'properties', 'json', 'plate', 'pcb'])
+const sectionOrder = ref(['canvas', 'properties', 'json', 'plate', 'pcb', 'firmware'])
 const draggedSection = ref<string | null>(null)
 const dragOverSection = ref<string | null>(null)
 const isDraggingSection = ref(false)
@@ -80,6 +81,7 @@ const collapsedSections = ref<Record<string, boolean>>({
   json: false,
   pcb: false,
   plate: false,
+  firmware: false,
 })
 
 onMounted(() => {
@@ -96,8 +98,11 @@ onMounted(() => {
         if (!order.includes('plate')) {
           order.push('plate')
         }
+        if (!order.includes('firmware')) {
+          order.push('firmware')
+        }
         // Only use saved order if it has the expected sections
-        if (order.length === 5) {
+        if (order.length === 6) {
           sectionOrder.value = order
         }
       }
@@ -255,6 +260,11 @@ const sections = computed(() => ({
     id: 'plate',
     title: 'Plate Generator',
     component: 'PlateGeneratorPanel',
+  },
+  firmware: {
+    id: 'firmware',
+    title: 'QMK Firmware',
+    component: 'FirmwareGeneratorPanel',
   },
 }))
 
@@ -580,6 +590,14 @@ const isLayoutEditorSettingsOpen = ref(false)
             class="card-body p-0"
           >
             <PlateGeneratorPanel />
+          </div>
+
+          <!-- QMK Firmware Section -->
+          <div
+            v-else-if="section.id === 'firmware' && !collapsedSections[section.id]"
+            class="card-body p-0"
+          >
+            <FirmwareGeneratorPanel />
           </div>
         </div>
       </div>
